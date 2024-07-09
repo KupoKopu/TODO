@@ -8,9 +8,6 @@
                 <p>{{ todo.task }}</p>
                 <br>
                 {{ todo.description }}
-                <form action="{{ url_for('delete_todo', todo_id=todo.id) }}" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
             </td>
         </tr>
         {% endfor %}

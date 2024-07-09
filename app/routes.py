@@ -30,15 +30,3 @@ def add():
 
 
     return render_template('add.html', title='To Do', form=form)
-
-@app.route('/delete/<int:todo_id>', methods=['POST'])
-def delete_todo(todo_id):
-    todo = ToDo.query.get_or_404(todo_id)
-    try:
-        db.session.delete(todo)
-        db.session.commit()
-        flash('Todo deleted successfully!', 'success')
-    except:
-        db.session.rollback()
-        flash('Error deleting todo!', 'danger')
-    return redirect(url_for('index'))
