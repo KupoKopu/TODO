@@ -1,10 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, SubmitField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class ToDoForm(FlaskForm):
-    task = StringField('Task', validators=[DataRequired()])
+class AddToDoForm(FlaskForm):
+    """Form for adding a to do item"""
+
+    task = StringField('Task', validators=[
+                       DataRequired(message="Task cannot be empty")])
     description = StringField('Description')
-    is_complete = BooleanField('Is Complete')
     submit = SubmitField('Submit')

@@ -1,15 +1,18 @@
 import sqlalchemy as sa
-import sqlalchemy.orm as so
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app import db
 
 
 class ToDo(db.Model):
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    task: so.Mapped[str] = so.mapped_column(sa.String(32), index=True,
-                                            unique=False)
-    description: so.Mapped[str] = so.mapped_column(sa.String(256), index=True,
-                                                   unique=False)
+    """ToDo model for storing tasks and their descriptions."""
+
+    __tablename__ = 'to_do'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    task: Mapped[str] = mapped_column(
+        sa.String(32), index=True, nullable=False)
+    description: Mapped[str] = mapped_column(sa.String(256), index=True)
 
     def __repr__(self):
-        return '<ToDo {}>'.format(self.task)
+        return f'<ToDo {self.task}>'
