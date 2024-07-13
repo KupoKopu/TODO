@@ -27,11 +27,24 @@ development environment
 - Visual Studio Code
 
 extensions
-- Python (for general language support including linting)
+- Python (for general language support and integrations including linting)
+
+linting
+- autopep8
 
 INSTRUCTIONS
-- you must have python installed with pip (developed and tested with python 3.12.0)
-- go in to terminal and install flask `pip install flask`
+- have python installed with pip (developed and tested with python 3.12.0)
+- install flask `pip install flask`
+- clone repo
+- go in to terminal at root of repo
+- run the app `flask run`
+- a browser tab to localhost that the app will be running in will show up or enter the localhost url in the command line into your browser
+
+DEV INSTRUCTIONS
+- have python installed with pip (developed and tested with python 3.12.0)
+- install flask `pip install flask`
+- install autopep8 `pip install autopep8`
+ - project already has workspace settings for auto-formatting via autopep8
 - clone repo
 - go in to terminal at root of repo
 - run the app `flask run`
@@ -67,6 +80,8 @@ CODING BEST PRACTICES
  - Line Length: Limit all lines to a maximum of 79 characters.
  - Blank Lines: Separate top-level function and class definitions with two blank lines. Use single blank lines to separate method definitions inside a class.
  - Imports: Import all modules at the beginning of the file, usually in three groups: standard library imports, related third-party imports, and local application/library-specific imports.
+ - and much more...
+ - this can be easily done with autopep8 automatic linting
 
 CI PIPELINES
 Using Github Actions to perform tests on pull request.
