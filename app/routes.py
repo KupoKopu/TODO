@@ -1,9 +1,11 @@
-from flask import flash, redirect, render_template, url_for, request
+import logging
+
+import sqlalchemy as sa
+from flask import redirect, render_template, url_for
+
 from app import app, db
 from app.forms import ToDoForm
 from app.models import ToDo
-import sqlalchemy as sa
-import logging
 
 logger = logging.getLogger('werkzeug')  # Get the underlying WSGI logger
 handler = logging.FileHandler('app.log')  # Create a handler for the log file
@@ -16,8 +18,9 @@ def index():
     allToDos = sa.select(ToDo)
     todos1 = db.session.scalars(allToDos).all()
     logger.info(todos1)
-    
+
     return render_template('index.html', title='To Do', todos=todos1)
+
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
@@ -27,6 +30,5 @@ def add():
         db.session.add(todo)
         db.session.commit()
         return redirect(url_for('index'))
-
 
     return render_template('add.html', title='To Do', form=form)

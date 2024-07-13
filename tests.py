@@ -1,11 +1,13 @@
 import os
-os.environ['DATABASE_URL'] = 'sqlite://'
-
-from datetime import datetime, timezone, timedelta
 import unittest
+
 import sqlalchemy as sa
+
 from app import app, db
 from app.models import ToDo
+
+os.environ['DATABASE_URL'] = 'sqlite://'
+
 
 class ToDoModelCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -32,6 +34,7 @@ class ToDoModelCase(unittest.TestCase):
         todos = db.session.scalars(sa.select(ToDo)).all()
 
         self.assertEqual(todos.__len__(), 1, "todo has inserted")
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
