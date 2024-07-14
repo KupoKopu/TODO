@@ -1,21 +1,28 @@
-import os
 import unittest
 
 import sqlalchemy as sa
+from flask import url_for
 
-from app import app, db
+from app import create_app, db
 from app.models import ToDo
+from config import Config
 
-os.environ['DATABASE_URL'] = 'sqlite://'
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    SERVER_NAME = 'localhost.localdomain'
+    WTF_CSRF_ENABLED = False
 
 
 class ToDoModelCase(unittest.TestCase):
-    def setUp(self) -> None:
-        self.app_context = app.app_context()
+    def setUp(self):
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
@@ -70,6 +77,44 @@ class ToDoModelCase(unittest.TestCase):
             db.session.commit()
 
             db.session.rollback()
+
+
+class FlaskRoutesTestCase(unittest.TestCase):
+
+    def setUp(self):
+        app = create_app(TestConfig)
+        self.app = app.test_client()
+        self.app_context = app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_index_route(self):
+        response = self.app.get(url_for('main.index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'To Do', response.data)
+
+    def test_add_route_get(self):
+        response = self.app.get(url_for('main.add'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Add To Do', response.data)
+
+    def test_add_route_post(self):
+        response = self.app.post(url_for('main.add'), data={
+            'task': "Test Task",
+            'description': "Test Description"
+        }, follow_redirects=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Test Task', response.data)
+
+        todo = ToDo.query.first()
+        self.assertIsNotNone(todo)
+        self.assertEqual(todo.task, "Test Task")
 
 
 if __name__ == '__main__':
