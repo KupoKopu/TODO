@@ -21,19 +21,55 @@ class ToDoModelCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_add_todo(self):
-
-        todos = db.session.scalars(sa.select(ToDo)).all()
-
+        todos = ToDo.query.all()
         self.assertEqual(todos, [], "no todos at start")
-
         todo = ToDo(task="test", description="test description")
+        db.session.add(todo)
+        db.session.commit()
+        todos = db.session.scalars(sa.select(ToDo)).all()
+        self.assertEqual(todos.__len__(), 1, "todo has inserted")
 
+        db.session.rollback()
+
+    def test_add_todo_fails_with_missing_task(self):
+        todo = ToDo(description="Missing task")
+        db.session.add(todo)
+        with self.assertRaises(sa.exc.IntegrityError):
+            db.session.commit()
+
+            db.session.rollback()
+
+    def test_add_todo_with_missing_description(self):
+        todo = ToDo(task="Missing Description")
         db.session.add(todo)
         db.session.commit()
 
-        todos = db.session.scalars(sa.select(ToDo)).all()
+        added_todo = ToDo.query.filter_by(
+            task="Missing Description").first()
+        self.assertIsNotNone(added_todo)
 
-        self.assertEqual(todos.__len__(), 1, "todo has inserted")
+        db.session.rollback()
+
+    def test_add_todo_fails_with_task_exceeding_max_length(self):
+        long_task = "x" * 33
+
+        with self.assertRaises(ValueError):
+            todo = ToDo(task=long_task,
+                        description="Normal description")
+            db.session.add(todo)
+            db.session.commit()
+
+            db.session.rollback()
+
+    def test_add_todo_fails_with_description_exceeding_max_length(self):
+        long_description = "x" * 300
+        with self.assertRaises(ValueError):
+            todo = ToDo(task="Long Description Task",
+                        description=long_description)
+            db.session.add(todo)
+            db.session.commit()
+
+            db.session.rollback()
 
 
 if __name__ == '__main__':
