@@ -1,3 +1,5 @@
+from flask import flash
+
 from app import db
 from app.models import ToDo
 from app.services.logger_service import setup_logger
@@ -15,6 +17,8 @@ def add_todo(task, description):
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error inserting to_do: {e}')
+        flash('An error occurred while processing your request. Check logs for more information.',
+              'error')
 
 
 def get_all_todos():
@@ -25,4 +29,6 @@ def get_all_todos():
 
     except Exception as e:
         logger.error(f'Error getting todos: {e}')
+        flash('An error occurred while processing your request. Check logs for more information.',
+              'error')
         return []

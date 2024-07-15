@@ -1,10 +1,12 @@
 import unittest
+from unittest.mock import patch
 
 import sqlalchemy as sa
 from flask import url_for
 
 from app import create_app, db
 from app.models import ToDo
+from app.services import todo_service
 from config import Config
 
 
@@ -80,7 +82,6 @@ class ToDoModelCase(unittest.TestCase):
 
 
 class FlaskRoutesTestCase(unittest.TestCase):
-
     def setUp(self):
         app = create_app(TestConfig)
         self.app = app.test_client()
@@ -115,6 +116,59 @@ class FlaskRoutesTestCase(unittest.TestCase):
         todo = ToDo.query.first()
         self.assertIsNotNone(todo)
         self.assertEqual(todo.task, "Test Task")
+
+
+class TestToDoService(unittest.TestCase):
+    def setUp(self):
+        app = create_app(TestConfig)
+        self.app = app.test_client()
+        self.app_context = app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+    @patch('app.services.todo_service.logger')
+    @patch('app.db.session.add')
+    def test_add_todo_success(self, mock_db_add, mock_logger):
+        todo_service.add_todo('Test Task', 'Test Description')
+        mock_db_add.assert_called()
+        mock_logger.error.assert_not_called()
+
+    @patch('app.services.todo_service.logger')
+    @patch('app.models.ToDo.query')
+    def test_get_all_todos_success(self, mock_query, mock_logger):
+        mock_query.all.return_value = [
+            ToDo(task='Test Task', description='Test Description')]
+        result = todo_service.get_all_todos()
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].task, 'Test Task')
+        self.assertEqual(result[0].description, 'Test Description')
+        mock_logger.error.assert_not_called()
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    @patch('app.db.session.add')
+    def test_add_todo_exception(self, mock_db_add, mock_logger, mock_flash):
+        mock_db_add.side_effect = Exception('Test exception')
+        todo_service.add_todo('Test Task', 'Test Description')
+        mock_flash.assert_called_with(
+            'An error occurred while processing your request. Check logs for more information.', 'error')
+        mock_logger.error.assert_called()
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    @patch('app.models.ToDo.query')
+    def test_get_all_todos_exception(self, mock_query, mock_logger, mock_flash):
+        mock_query.all.side_effect = Exception('Test exception')
+        result = todo_service.get_all_todos()
+        self.assertEqual(result, [])
+        mock_flash.assert_called_with(
+            'An error occurred while processing your request. Check logs for more information.', 'error')
+        mock_logger.error.assert_called()
 
 
 if __name__ == '__main__':

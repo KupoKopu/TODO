@@ -12,7 +12,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container">
-      <a class="navbar-brand" href="{{ url_for('index') }}">To Do Application</a>
+      <a class="navbar-brand" href="{{ url_for('main.index') }}">To Do Application</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -20,15 +20,25 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ url_for('index') }}">List</a>
+            <a class="nav-link" aria-current="page" href="{{ url_for('main.index') }}">List</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ url_for('add') }}">Add To Do</a>
+            <a class="nav-link" aria-current="page" href="{{ url_for('main.add') }}">Add To Do</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
   <div class="container mt-3">
     {% block content %}{% endblock %}
   </div>
