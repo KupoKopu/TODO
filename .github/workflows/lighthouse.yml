@@ -37,8 +37,14 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Install Lighthouse
-      run: npm install -g lighthouse
+    - name: Install Puppeteer and Lighthouse
+      run: npm install -g puppeteer lighthouse
+
+    - name: Install Chrome
+      run: |
+        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install puppeteer
+        export CHROME_PATH=$(npm bin puppeteer)/.local-chromium/linux-*/chrome-linux/chrome
+        echo "CHROME_PATH=$CHROME_PATH" >> $GITHUB_ENV
 
     - name: Run Lighthouse
-      run: lighthouse http://localhost:5000 --output=json --output-path=./lighthouse_report.json
+      run: lighthouse http://localhost:5000 --output=json --output-path=./lighthouse_report.json --chrome-flags="--headless --no-sandbox --disable-gpu"
