@@ -1,4 +1,4 @@
-name: CI with Lighthouse
+name: Lighthouse CI
 
 on:
   push:
@@ -7,45 +7,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  lighthouse:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.8'
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install Flask gunicorn
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install Flask gunicorn
+          pip install -r requirements.txt
 
+      - name: Start Flask application
+        run: |
+          nohup gunicorn --bind 0.0.0.0:5000 todo:app > /dev/null 2>&1 &
+        env:
+          FLASK_APP: todo.py
+          FLASK_ENV: development
 
-    - name: Start Flask application
-      run: |
-        nohup gunicorn --bind 0.0.0.0:5000 todo:app > /dev/null 2>&1 &
-      env:
-        FLASK_APP: todo.py
-        FLASK_ENV: development
-
-    - name: Setup Node.js for Lighthouse
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
-    - name: Install Puppeteer and Lighthouse
-      run: npm install -g puppeteer lighthouse
-
-    - name: Launch Chrome using Puppeteer
-      run: |
-        node -e "const puppeteer = require('puppeteer'); (async () => {const browser = await puppeteer.launch(); console.log('WebSocketEndpoint=' + browser.wsEndpoint()); process.exit(0); })();" > chrome_ws_endpoint.txt
-        echo "CHROME_WS_ENDPOINT=$(cat chrome_ws_endpoint.txt | grep WebSocketEndpoint | cut -d'=' -f2)" >> $GITHUB_ENV
-
-    - name: Run Lighthouse using Puppeteer's Chrome
-      run: lighthouse http://localhost:5000 --output=json --output-path=./lighthouse_report.json --chrome-flags="--headless --no-sandbox --disable-gpu" --port=0
-      env:
-        LIGHTHOUSE_CHROMIUM_PATH: ${{ env.CHROME_WS_ENDPOINT }}
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://example.com/
+            https://example.com/blog
+          budgetPath: ./budget.json # test performance budgets
+          uploadArtifacts: true # save results as an action artifacts
+          temporaryPublicStorage: true # upload lighthouse report to the temporary storage
