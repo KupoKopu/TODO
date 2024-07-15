@@ -1,14 +1,22 @@
-name: Lighthouse CI
-
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-  workflow_dispatch:
-
 jobs:
-  lighthouse:
+  build-and-test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: mydb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,12 +31,21 @@ jobs:
           pip install Flask gunicorn
           pip install -r requirements.txt
 
+      - name: Initialize Database
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/mydb
+        run: |
+          # Assuming you have a script or command to initialize the database
+          # For example, using Flask-Migrate with SQLAlchemy
+          flask db upgrade
+
       - name: Start Flask application
         run: |
           nohup gunicorn --bind 0.0.0.0:5000 todo:app > /dev/null 2>&1 &
         env:
           FLASK_APP: todo.py
           FLASK_ENV: development
+          DATABASE_URL: postgresql://user:password@localhost:5432/mydb
 
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v12
