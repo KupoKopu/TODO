@@ -40,11 +40,12 @@ jobs:
     - name: Install Puppeteer and Lighthouse
       run: npm install -g puppeteer lighthouse
 
-    - name: Install Chrome
+    - name: Launch Chrome using Puppeteer
       run: |
-        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install puppeteer
-        export CHROME_PATH=$(npm bin puppeteer)/.local-chromium/linux-*/chrome-linux/chrome
-        echo "CHROME_PATH=$CHROME_PATH" >> $GITHUB_ENV
+        node -e "const puppeteer = require('puppeteer'); (async () => {const browser = await puppeteer.launch(); console.log('WebSocketEndpoint=' + browser.wsEndpoint()); process.exit(0); })();" > chrome_ws_endpoint.txt
+        echo "CHROME_WS_ENDPOINT=$(cat chrome_ws_endpoint.txt | grep WebSocketEndpoint | cut -d'=' -f2)" >> $GITHUB_ENV
 
-    - name: Run Lighthouse
-      run: lighthouse http://localhost:5000 --output=json --output-path=./lighthouse_report.json --chrome-flags="--headless --no-sandbox --disable-gpu"
+    - name: Run Lighthouse using Puppeteer's Chrome
+      run: lighthouse http://localhost:5000 --output=json --output-path=./lighthouse_report.json --chrome-flags="--headless --no-sandbox --disable-gpu" --port=0
+      env:
+        LIGHTHOUSE_CHROMIUM_PATH: ${{ env.CHROME_WS_ENDPOINT }}
