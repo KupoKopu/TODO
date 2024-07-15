@@ -35,7 +35,7 @@ jobs:
     - name: Setup Node.js for Lighthouse
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
 
     - name: Install Lighthouse
       run: npm install -g lighthouse
