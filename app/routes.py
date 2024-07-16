@@ -18,7 +18,7 @@ def index():
 def add():
     form = AddToDoForm()
     if form.validate_on_submit():
-        if todo_service.add_todo(form.task.data, form.description.data):
-            return redirect(url_for('main.index'))
+        todo_service.add_todo(form.task.data, form.description.data)
+        return redirect(url_for('main.index'))
 
     return render_template('add.html', title='To Do', form=form)
