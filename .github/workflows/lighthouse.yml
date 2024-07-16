@@ -9,7 +9,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
+    permissions:
+      issues: write  
+      
     services:
       postgres:
         image: postgres:12
