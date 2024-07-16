@@ -18,6 +18,8 @@ class TestConfig(Config):
 
 
 class ToDoModelCase(unittest.TestCase):
+    """Unit tests for the ToDo model"""
+
     def setUp(self):
         self.app = create_app(TestConfig)
         self.app_context = self.app.app_context()
@@ -82,6 +84,8 @@ class ToDoModelCase(unittest.TestCase):
 
 
 class FlaskRoutesTestCase(unittest.TestCase):
+    """Integration tests using flask routes"""
+
     def setUp(self):
         app = create_app(TestConfig)
         self.app = app.test_client()
@@ -94,12 +98,12 @@ class FlaskRoutesTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def test_index_route(self):
+    def test_open_index_page(self):
         response = self.app.get(url_for('main.index'))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'To Do', response.data)
 
-    def test_add_route_get(self):
+    def test_open_add_page(self):
         response = self.app.get(url_for('main.add'))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Add To Do', response.data)
@@ -119,6 +123,8 @@ class FlaskRoutesTestCase(unittest.TestCase):
 
 
 class TestToDoService(unittest.TestCase):
+    """Unit Tests for the ToDo service"""
+
     def setUp(self):
         app = create_app(TestConfig)
         self.app = app.test_client()
