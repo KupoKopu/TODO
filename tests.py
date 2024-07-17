@@ -318,6 +318,29 @@ class TestToDoService(unittest.TestCase):
         mock_logger.error.assert_called_with(
             'Error updating to_do: Description exceeds maximum length of 256 characters')
 
+    def test_get_todo_by_id_(self):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+
+        result = todo_service.get_todo_by_id(todo.id)
+
+        self.assertEqual(result, todo)
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_get_todo_by_id_fails_when_todo_not_found(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+
+        result = todo_service.get_todo_by_id(3)
+
+        self.assertIsNone(result)
+        mock_logger.error.assert_called_with('Todo item not found: ID 3')
+        mock_flash.assert_called_with(
+            'Cannot get a non-existing todo.', 'error')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
