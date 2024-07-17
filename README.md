@@ -1,5 +1,4 @@
 # TODO APPLICATION
-
 This project implemenents an application that allows a user to create todo items that are stored locally.
 
 ### Features Implemented:
@@ -48,6 +47,9 @@ Auditing
 - Lighthouse
 - Zap Scan
 
+web server (for CI pipeline)
+- gunicorn
+
 ### INSTRUCTIONS
 - have python installed with pip (developed and tested with python 3.12.0)
 - clone repo
@@ -66,7 +68,7 @@ Auditing
 - run the app `flask run`
 - a browser tab will open with the localhost app or you can enter the `http://localhost:5000/index` url in the command line into your browser
 
-Useful commands
+### Useful commands
 `python -m unittest .\path\to\test_file.py` - run unit testing
 `coverage run -m unittest discover` - run discoverable tests + analyze coverage
 `coverage report` - generates report on coverage
@@ -74,7 +76,7 @@ Useful commands
 `flask db migrate -m "comment"` - generate new migration file for updating database
 `flask db upgrade` - update database with migrations file
 
-PROJECT WORKFLOW
+### PROJECT WORKFLOW
 using kanban board and backlog. Tickets are created and stored in the backlog to be taken out into sprint.
 Tickets are assigned and when code complete, are put up a pull request to be reviewed and merged.
 
@@ -149,7 +151,18 @@ To meet this standard the project will:
 - manage risk by implementing a plan for implementation of the project
 
 ### PERFORMANCE AND ACCESSIBILITY AUDITS
-![alt text](accessibility-and-performance-audit.png)
+![alt text](resources/accessibility-and-performance-audit.png)
+![alt text](resources/performance-details.png)
+
+Overall Score is positive for performance and accessibility.
+
+Web app accessibility is great with all interactable elements traversable via keyboard
+
+Performance is great however can still be improved. Custom CSS could be used to then remove bootstrap CDN to reduce bloat of all the styling and interactivity not used by the web app.
 
 ### SECURITY AUDIT
-![alt text](security-audit.png)
+![alt text](resources/security-audit.png)
+
+Security Audit is good.
+
+There are no high severity issues and the only medium severity issue is "HTTP only site". This is negligible for now as the web app is designed for localhost use. However, if to be used in a production environment with the port exposed, it is crucial to implement SSL certificates into the web application.
