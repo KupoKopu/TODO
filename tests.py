@@ -108,6 +108,16 @@ class FlaskRoutesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Add To Do', response.data)
 
+    def test_open_edit_page(self):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+
+        response = self.app.get(url_for('main.edit', todo_id=todo.id))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Edit to do', response.data)
+
     def test_add_route_post(self):
         response = self.app.post(url_for('main.add'), data={
             'task': "Test Task",
