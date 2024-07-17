@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import sqlalchemy as sa
 from flask import url_for
+from sqlalchemy.exc import OperationalError, StatementError
 
 from app import create_app, db
 from app.models import ToDo
@@ -117,6 +118,18 @@ class FlaskRoutesTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Edit to do', response.data)
+
+    def test_search_todos(self):
+        todos = [ToDo(task='Task 1', description='Description 1'),
+                 ToDo(task='Task 2', description='Description 2')]
+        db.session.add_all(todos)
+        db.session.commit()
+
+        response = self.app.get(url_for('main.index', search='Task 1'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Task 1', response.data)
+        self.assertNotIn(b'Task 2', response.data)
 
     def test_add_route_post(self):
         response = self.app.post(url_for('main.add'), data={
@@ -364,6 +377,56 @@ class TestToDoService(unittest.TestCase):
         mock_logger.error.assert_called_with('Todo item not found: ID 3')
         mock_flash.assert_called_with(
             'Cannot get a non-existing todo.', 'error')
+
+    def test_get_filtered_todos_success(self):
+        todos = [ToDo(task='Task 1', description='Description 1'),
+                 ToDo(task='Task 2', description='Description 2')]
+        db.session.add_all(todos)
+        db.session.commit()
+
+        result = todo_service.get_filtered_todos('Task')
+
+        self.assertEqual(result, todos)
+
+    def test_get_filtered_todos_empty_result(self):
+        todos = [ToDo(task='Task 1', description='Description 1'),
+                 ToDo(task='Task 2', description='Description 2')]
+        db.session.add_all(todos)
+        db.session.commit()
+
+        result = todo_service.get_filtered_todos('Task 3')
+
+        self.assertEqual(result, [])
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    @patch('app.services.todo_service.ToDo.query')
+    def test_get_filtered_todos_catch_operational_error(self, mock_query, mock_logger, mock_flash):
+        search_query = 'Task'
+        ToDo.query.filter.side_effect = OperationalError(
+            "any", "any", "any", "any")
+
+        result = todo_service.get_filtered_todos(search_query)
+
+        self.assertEqual(result, [])
+        mock_logger.error.assert_called()
+        mock_flash.assert_called_with(
+            'A database connection error occurred. Please try again later.', 'error')
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    @patch('app.services.todo_service.ToDo.query')
+    def test_get_filtered_todos_catch_statement_error(self, mock_query, mock_logger, mock_flash):
+        search_query = 'Task'
+        ToDo.query.filter.side_effect = StatementError(
+            "any", "any", "any", "any")
+
+        result = todo_service.get_filtered_todos(search_query)
+
+        self.assertEqual(result, [])
+        mock_logger.error.assert_called()
+        mock_flash.assert_called_with(
+            'An error occurred while processing your request. Check logs for more information.', 'error')
 
 
 if __name__ == '__main__':
