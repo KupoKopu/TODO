@@ -47,13 +47,9 @@ jobs:
         run: |
           flask db upgrade
 
-      - name: Generate self-signed SSL certificate
-        run: |
-          openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
-
       - name: Start Flask application
         run: |
-          nohup gunicorn --bind 0.0.0.0:5000 --certfile cert.pem --keyfile key.pem todo:app > /dev/null 2>&1 &
+          nohup gunicorn --bind 0.0.0.0:5000 todo:app > /dev/null 2>&1 &
         env:
           FLASK_APP: todo.py
           FLASK_ENV: development
@@ -62,7 +58,7 @@ jobs:
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: 'https://localhost:5000/'
+          urls: 'http://localhost:5000/'
           budgetPath: ./budget.json
           uploadArtifacts: true
           temporaryPublicStorage: true

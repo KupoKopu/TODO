@@ -33,4 +33,4 @@ csp = {
     ],
 }
 
-Talisman(app, content_security_policy=csp)
+Talisman(app, content_security_policy=csp, force_https=False)
