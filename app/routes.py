@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from app.forms import ToDoForm
 from app.services import todo_service
@@ -10,6 +10,10 @@ bp = Blueprint('main', __name__)
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
     todos = todo_service.get_all_todos()
+    search_query = request.args.get('search', '')
+
+    if search_query:
+        todos = todo_service.get_filtered_todos(search_query)
 
     return render_template('index.html', title='To Do', todos=todos)
 

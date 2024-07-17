@@ -1,4 +1,5 @@
 from flask import flash
+from sqlalchemy.exc import OperationalError, StatementError
 
 from app import db
 from app.exceptions.exceptions import TodoNotFoundException
@@ -152,3 +153,29 @@ def get_todo_by_id(todo_id):
         logger.error(e.__str__())
         flash('Cannot get a non-existing todo.', 'error')
         return None
+
+
+def get_filtered_todos(search_query):
+    """
+    Retrieves all todos from the database that match the search query.
+
+    Args:
+        search_query (str): The search query to filter todos.
+
+    Returns:
+        A list of todos that match the search query.
+    """
+    try:
+        result = ToDo.query.filter(ToDo.task.contains(search_query)).all()
+        logger.info(f'Getting filtered to_do: {result}')
+        return result
+
+    except OperationalError as e:
+        logger.error(f'Error connecting to the database: {e}')
+        flash('A database connection error occurred. Please try again later.', 'error')
+        return []
+    except StatementError as e:
+        logger.error(f'Error getting filtered todos: {e}')
+        flash('An error occurred while processing your request. Check logs for more information.',
+              'error')
+        return []
