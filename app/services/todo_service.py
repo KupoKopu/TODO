@@ -9,6 +9,16 @@ logger = setup_logger()
 
 
 def add_todo(task, description):
+    """
+    Adds a new ToDo item to the database.
+
+    Args:
+        task (str): The task name.
+        description (str): The description of the task.
+
+    Returns:
+        None
+    """
     try:
         todo = ToDo(task=task, description=description)
         db.session.add(todo)
@@ -23,6 +33,12 @@ def add_todo(task, description):
 
 
 def get_all_todos():
+    """
+    Retrieves all todos from the database.
+
+    Returns:
+        A list of all todos in the database.
+    """
     try:
         result = ToDo.query.all()
         logger.info(f'Getting all from to_do: {result}')
@@ -36,6 +52,21 @@ def get_all_todos():
 
 
 def delete_todo(todo_id):
+    """
+    Deletes a todo item from the database.
+
+    Args:
+        todo_id (int): The ID of the todo item to be deleted.
+
+    Returns:
+        None
+
+    Effects:
+        The todo item with the given ID is deleted from the database.
+
+    Raises:
+        TodoNotFoundException: If the todo item with the given ID does not exist.
+    """
     try:
         todo = ToDo.query.get(todo_id)
 
@@ -53,6 +84,24 @@ def delete_todo(todo_id):
 
 
 def edit_todo(todo_id, task, description):
+    """
+    Edit a todo item with the given todo_id.
+
+    Args:
+        todo_id (int): The ID of the todo item to be edited.
+        task (str): The updated task for the todo item.
+        description (str): The updated description for the todo item.
+
+    Returns:
+        None
+
+    Effects:
+        The task and description of the todo item with the given todo_id are updated
+
+    Raises:
+        TodoNotFoundException: If the todo item with the given todo_id does not exist.
+        ValueError: If the task is empty.
+    """
     try:
         todo = ToDo.query.get(todo_id)
 
@@ -77,6 +126,19 @@ def edit_todo(todo_id, task, description):
 
 
 def get_todo_by_id(todo_id):
+    """
+    Retrieve a todo item by its ID.
+
+    Args:
+        todo_id (int): The ID of the todo item to retrieve.
+
+    Returns:
+        ToDo: The todo item with the specified ID, if found.
+        None: If the todo item with the specified ID does not exist.
+
+    Raises:
+        TodoNotFoundException: If the todo item with the specified ID does not exist.
+    """
     try:
         todo = ToDo.query.get(todo_id)
 

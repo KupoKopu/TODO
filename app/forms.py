@@ -4,8 +4,9 @@ from wtforms.validators import DataRequired
 
 
 class ToDoForm(FlaskForm):
-    """Form for adding and editing a to do item"""
-
+    """
+    Represents a form for creating or editing a ToDo task.
+    """
     task = StringField('Task', validators=[
                        DataRequired(message="Task cannot be empty")])
     description = StringField('Description')
