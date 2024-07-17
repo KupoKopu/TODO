@@ -74,3 +74,19 @@ def edit_todo(todo_id, task, description):
         logger.error(f'Error updating to_do: {e}')
         flash(e.__str__(), 'error')
         db.session.rollback()
+
+
+def get_todo_by_id(todo_id):
+    try:
+        todo = ToDo.query.get(todo_id)
+
+        if (todo is None):
+            raise TodoNotFoundException(todo_id)
+
+        logger.info(f'Getting to_do: {todo}')
+        return todo
+
+    except TodoNotFoundException as e:
+        logger.error(e.__str__())
+        flash('Cannot get a non-existing todo.', 'error')
+        return None
