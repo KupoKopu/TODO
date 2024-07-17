@@ -3,11 +3,22 @@ TODO APPLICATION
 This project implemenents an application that allows a user to create todo items that are stored locally.
 
 Features Implemented:
-
+- adding to do
+- deleting to do
+- editing to do
 
 TEAM
 KupoKopu - Developer, Tester, Project manager
 luyah231 - Developer, Tester
+
+Project manager
+Responsible for the creation of tickets and coordination with assigning tickets to developers.
+
+Developer
+Responsible for developing functionality from tickets, participating in code reviews, assisting with technical debt, testing their own implementation.
+
+Tester
+Responsible for manually testing the application to spot bugs and how complete features are.
 
 TOOLS
 Version Control
@@ -32,6 +43,10 @@ extensions
 linting
 - autopep8
 
+Auditing
+- Lighthouse
+- Zap Scan
+
 INSTRUCTIONS
 - have python installed with pip (developed and tested with python 3.12.0)
 - clone repo
@@ -50,17 +65,30 @@ DEV INSTRUCTIONS
 - run the app `flask run`
 - a browser tab will open with the localhost app or you can enter the `http://localhost:5000/index` url in the command line into your browser
 
+Useful commands
+`python -m unittest .\path\to\test_file.py` - run unit testing
+`coverage run -m unittest discover` - run discoverable tests + analyze coverage
+`coverage report` - generates report on coverage
+`pip freeze > requirements.txt` - store new dependencies in text file for easier installation
+`flask db migrate -m "comment"` - generate new migration file for updating database
+`flask db upgrade` - update database with migrations file
+
 PROJECT WORKFLOW
 using kanban board and backlog. Tickets are created and stored in the backlog to be taken out into sprint.
-Tickets are assigned and when code complete, put up a pull request to be reviewed and merged.
+Tickets are assigned and when code complete, are put up a pull request to be reviewed and merged.
 
-Security reports generated from Zap scan github actions will be used to address security by creating response tickets.
+Security reports generated from Zap scan github actions will be used to address security by creating future response tickets.
 
 TEST METHODOLOGY
 Test Driven Development.
 
+Create tests before implementation of ticket. Use the tests to as a blueprint for the code.
+
+Mix of unit testing on functionality stored in services and data models
+
 Create unit tests with happy path for ticket, code till happy path is achieved.
 Create other unit tests to deal with edge case scenarios like errors, wrong input.
+
 
 When submitting a pull request, share screenshots of:
 - changes made
@@ -93,7 +121,7 @@ CODING BEST PRACTICES
  - this can be easily done with autopep8 automatic linting
 
 CI PIPELINES
-Using Github Actions to perform tests on pull request.
+Github Actions are used to automate test coverage, accessibility, performance and security reports.
 
 Coverage CI
 Used to confirm quality of code by asserting code coverage is over 80%
