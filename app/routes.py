@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
-from app.forms import ToDoForm
+from app.forms import SearchForm, ToDoForm
 from app.services import todo_service
 
 bp = Blueprint('main', __name__)
@@ -9,13 +9,15 @@ bp = Blueprint('main', __name__)
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
+    form = SearchForm()
     todos = todo_service.get_all_todos()
-    search_query = request.args.get('search', '')
 
-    if search_query:
-        todos = todo_service.get_filtered_todos(search_query)
+    if form.validate_on_submit():
+        search_query = form.search.data
+        if search_query:
+            todos = todo_service.get_filtered_todos(search_query)
 
-    return render_template('index.html', title='To Do', todos=todos)
+    return render_template('index.html', title='To Do', todos=todos, form=form)
 
 
 @bp.route('/add', methods=['GET', 'POST'])

@@ -11,3 +11,11 @@ class ToDoForm(FlaskForm):
                        DataRequired(message="Task cannot be empty")])
     description = StringField('Description')
     submit = SubmitField('Submit')
+
+
+class SearchForm(FlaskForm):
+    """
+    Represents a form for searching ToDo tasks.
+    """
+    search = StringField('Search')
+    submit = SubmitField('Submit')
