@@ -4,3 +4,17 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.left-no-border-radius {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-medium-width {
+    max-width: 600px;
+}
+
+.center-flex {
+    display: flex;
+    justify-content: center;
+}

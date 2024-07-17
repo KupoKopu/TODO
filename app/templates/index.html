@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+<form class="center-flex" action="{{ url_for('main.index') }}" method="get">
+    <div class="input-group mb-3 input-medium-width">
+        <input type="text" class="form-control" name="search" placeholder="Search todos..."
+            value="{{ request.args.get('search', '') }}">
+        <div class="input-group-append">
+            <button class="btn btn-primary left-no-border-radius" type="submit">Search</button>
+        </div>
+    </div>
+</form>
 <table class="table table-hover">
     {% for todo in todos %}
     <tr>
