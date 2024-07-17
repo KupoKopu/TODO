@@ -69,12 +69,12 @@ web server (for CI pipeline)
 - a browser tab will open with the localhost app or you can enter the `http://localhost:5000/index` url in the command line into your browser
 
 ### Useful commands
-`python -m unittest .\path\to\test_file.py` - run unit testing
-`coverage run -m unittest discover` - run discoverable tests + analyze coverage
-`coverage report` - generates report on coverage
-`pip freeze > requirements.txt` - store new dependencies in text file for easier installation
-`flask db migrate -m "comment"` - generate new migration file for updating database
-`flask db upgrade` - update database with migrations file
+- `python -m unittest .\path\to\test_file.py` - run unit testing
+- `coverage run -m unittest discover` - run discoverable tests + analyze coverage
+- `coverage report` - generates report on coverage
+- `pip freeze > requirements.txt` - store new dependencies in text file for easier installation
+- `flask db migrate -m "comment"` - generate new migration file for updating database
+- `flask db upgrade` - update database with migrations file
 
 ### PROJECT WORKFLOW
 using kanban board and backlog. Tickets are created and stored in the backlog to be taken out into sprint.
