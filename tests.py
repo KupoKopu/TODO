@@ -176,6 +176,34 @@ class TestToDoService(unittest.TestCase):
             'An error occurred while processing your request. Check logs for more information.', 'error')
         mock_logger.error.assert_called()
 
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    @patch('app.db.session.delete')
+    def test_delete_todo(self, mock_delete, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.delete_todo(todo.id)
+
+        mock_delete.assert_called()
+        mock_flash.assert_not_called()
+        mock_logger.info.assert_called_with('Deleted to_do: <ToDo Test Task>')
+        mock_logger.error.assert_not_called()
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    @patch('app.db.session.delete')
+    def test_delete_todo_fails_when_todo_not_found(self, mock_delete, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.delete_todo(3)
+
+        mock_delete.assert_not_called()
+        mock_flash.assert_called_with('Error deleting todo!', 'error')
+        mock_logger.info.assert_not_called()
+        mock_logger.error.assert_called_with('Todo item not found: ID 3')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
