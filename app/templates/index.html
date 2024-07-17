@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table table-hover">
+    {% for todo in todos %}
+    <tr>
+        <td>
+            <p>{{ todo.task }}</p>
+            <br>
+            {{ todo.description }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

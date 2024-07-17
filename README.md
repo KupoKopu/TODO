@@ -27,19 +27,34 @@ development environment
 - Visual Studio Code
 
 extensions
-- Python (for general language support including linting)
+- Python (for general language support and integrations including linting)
+
+linting
+- autopep8
 
 INSTRUCTIONS
-- you must have python installed with pip (developed and tested with python 3.12.0)
-- go in to terminal and install flask `pip install flask`
+- have python installed with pip (developed and tested with python 3.12.0)
+- clone repo
+- install requirements `pip install -r requirements.txt`
+- go in to terminal at root of repo
+- run the app `flask run`
+- a browser tab will open with the localhost app or you can enter the `http://localhost:5000/index` url in the command line into your browser
+
+DEV INSTRUCTIONS
+- have python installed with pip (developed and tested with python 3.12.0)
+- install flask `pip install flask`
+- install autopep8 `pip install autopep8`
+ - project already has workspace settings for auto-formatting via autopep8
 - clone repo
 - go in to terminal at root of repo
 - run the app `flask run`
-- a browser tab to localhost that the app will be running in will show up or enter the localhost url in the command line into your browser
+- a browser tab will open with the localhost app or you can enter the `http://localhost:5000/index` url in the command line into your browser
 
 PROJECT WORKFLOW
-using kanban board and backlog. Create tickets in backlog and take them up into sprint.
-Assign tickets, develop features in branches and put up a pull request to be reviewed.
+using kanban board and backlog. Tickets are created and stored in the backlog to be taken out into sprint.
+Tickets are assigned and when code complete, put up a pull request to be reviewed and merged.
+
+Security reports generated from Zap scan github actions will be used to address security by creating response tickets.
 
 TEST METHODOLOGY
 Test Driven Development.
@@ -47,7 +62,14 @@ Test Driven Development.
 Create unit tests with happy path for ticket, code till happy path is achieved.
 Create other unit tests to deal with edge case scenarios like errors, wrong input.
 
-When in submitting a pull request, share a screenshot of unit test results.
+When submitting a pull request, share screenshots of:
+- changes made
+- generated lighthouse report
+
+Github actions will run:
+- coverage test with requirements of more than 80%
+- lighthouse test for accessibility
+- zap scan for security
 
 Code reviews
 Use code reviews to assess code against coding best practices. Approve the pull request or comment any improvements.
@@ -67,9 +89,20 @@ CODING BEST PRACTICES
  - Line Length: Limit all lines to a maximum of 79 characters.
  - Blank Lines: Separate top-level function and class definitions with two blank lines. Use single blank lines to separate method definitions inside a class.
  - Imports: Import all modules at the beginning of the file, usually in three groups: standard library imports, related third-party imports, and local application/library-specific imports.
+ - and much more...
+ - this can be easily done with autopep8 automatic linting
 
 CI PIPELINES
 Using Github Actions to perform tests on pull request.
+
+Coverage CI
+Used to confirm quality of code by asserting code coverage is over 80%
+
+Lighthouse CI
+Generate Accessibility and Performance Reports
+
+Zap Scan CI
+Generate Security Reports
 
 STANDARDS
 IEEE 730
@@ -87,3 +120,4 @@ To meet this standard the project will:
 - manage risk by implementing a plan for implementation of the project
 
 PERFORMANCE AND ACCESSIBILITY AUDITS
+![alt text](accessibility-and-performance-audit.png)

@@ -1,0 +1,13 @@
+{
+    "python.formatting.provider": "autopep8",
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "python.formatting.autopep8Args": [
+        "--max-line-length=79",
+        "--experimental"
+    ]
+}
