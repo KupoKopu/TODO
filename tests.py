@@ -125,7 +125,9 @@ class FlaskRoutesTestCase(unittest.TestCase):
         db.session.add_all(todos)
         db.session.commit()
 
-        response = self.app.get(url_for('main.index', search='Task 1'))
+        response = self.app.post(url_for('main.index'), data={
+            'search': "Task 1",
+        }, follow_redirects=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Task 1', response.data)
