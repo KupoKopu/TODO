@@ -50,3 +50,27 @@ def delete_todo(todo_id):
         logger.error(e.__str__())
         flash('Cannot delete a non-existing todo.', 'error')
         db.session.rollback()
+
+
+def edit_todo(todo_id, task, description):
+    try:
+        todo = ToDo.query.get(todo_id)
+
+        if (todo is None):
+            raise TodoNotFoundException(todo_id)
+        if not task:
+            raise ValueError('Task cannot be empty.')
+
+        todo.task = task
+        todo.description = description
+        db.session.commit()
+        logger.info(f'Updated to_do: {todo}')
+
+    except TodoNotFoundException as e:
+        logger.error(e.__str__())
+        flash('Cannot edit a non-existing todo.', 'error')
+        db.session.rollback()
+    except ValueError as e:
+        logger.error(f'Error updating to_do: {e}')
+        flash(e.__str__(), 'error')
+        db.session.rollback()
