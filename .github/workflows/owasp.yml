@@ -49,11 +49,11 @@ jobs:
 
       - name: Generate self-signed SSL certificate
         run: |
-         openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+          openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
 
       - name: Start Flask application
         run: |
-          nohup gunicorn --bind 0.0.0.0:5000 --certfile cert.pem --keyfile key.pem todo:app todo:app > /dev/null 2>&1 &
+          nohup gunicorn --bind 0.0.0.0:5000 --certfile cert.pem --keyfile key.pem todo:app > /dev/null 2>&1 &
         env:
           FLASK_APP: todo.py
           FLASK_ENV: development
