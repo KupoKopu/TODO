@@ -24,7 +24,13 @@ csp = {
     'font-src': [
         "'self'",
         'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css'
-    ]
+    ],
+    'frame-ancestors': [
+        "'self'"
+    ],
+    'form-action': [
+        "'self'"
+    ],
 }
 
 Talisman(app, content_security_policy=csp, force_https=False)
