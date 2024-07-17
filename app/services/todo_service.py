@@ -48,5 +48,5 @@ def delete_todo(todo_id):
 
     except TodoNotFoundException as e:
         logger.error(e.message)
-        flash('Cannot delete a non-existing todo.', 'danger')
+        flash('Cannot delete a non-existing todo.', 'error')
         db.session.rollback()

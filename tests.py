@@ -200,7 +200,8 @@ class TestToDoService(unittest.TestCase):
         todo_service.delete_todo(3)
 
         mock_delete.assert_not_called()
-        mock_flash.assert_called_with('Error deleting todo!', 'error')
+        mock_flash.assert_called_with(
+            'Cannot delete a non-existing todo.', 'error')
         mock_logger.info.assert_not_called()
         mock_logger.error.assert_called_with('Todo item not found: ID 3')
 
