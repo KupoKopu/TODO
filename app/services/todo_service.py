@@ -1,6 +1,7 @@
 from flask import flash
 
 from app import db
+from app.exceptions.exceptions import TodoNotFoundException
 from app.models import ToDo
 from app.services.logger_service import setup_logger
 
@@ -32,3 +33,20 @@ def get_all_todos():
         flash('An error occurred while processing your request. Check logs for more information.',
               'error')
         return []
+
+
+def delete_todo(todo_id):
+    try:
+        todo = ToDo.query.get(todo_id)
+
+        if (todo is None):
+            raise TodoNotFoundException(todo_id)
+
+        db.session.delete(todo)
+        db.session.commit()
+        logger.info(f'Deleted to_do: {todo}')
+
+    except TodoNotFoundException as e:
+        logger.error(e.message)
+        flash('Cannot delete a non-existing todo.', 'danger')
+        db.session.rollback()

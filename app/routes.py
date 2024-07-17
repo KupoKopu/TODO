@@ -22,3 +22,9 @@ def add():
         return redirect(url_for('main.index'))
 
     return render_template('add.html', title='To Do', form=form)
+
+
+@bp.route('/delete/<int:todo_id>', methods=['POST'])
+def delete_todo(todo_id):
+    todo_service.delete_todo(todo_id)
+    return redirect(url_for('main.index'))
