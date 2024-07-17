@@ -131,6 +131,20 @@ class FlaskRoutesTestCase(unittest.TestCase):
         self.assertIsNotNone(todo)
         self.assertEqual(todo.task, "Test Task")
 
+    def test_delete_post(self):
+        todo = ToDo(task="Test Task", description="Test Description")
+        db.session.add(todo)
+        db.session.commit()
+
+        response = self.app.post(url_for('main.delete_todo', todo_id=todo.id),
+                                 follow_redirects=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(b'Test Task', response.data)
+
+        deleted_todo = ToDo.query.get(todo.id)
+        self.assertIsNone(deleted_todo)
+
     def test_edit_post(self):
         todo = ToDo(task="Test Task", description="Test Description")
         db.session.add(todo)
