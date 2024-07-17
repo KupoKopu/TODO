@@ -2,6 +2,7 @@
 
 {% block content %}
 <form class="center-flex" action="{{ url_for('main.index') }}" method="get">
+    {{ form.hidden_tag() }}
     <div class="input-group mb-3 input-medium-width">
         <input type="text" class="form-control" name="search" placeholder="Search todos..."
             value="{{ request.args.get('search', '') }}">
