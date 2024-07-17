@@ -121,6 +121,22 @@ class FlaskRoutesTestCase(unittest.TestCase):
         self.assertIsNotNone(todo)
         self.assertEqual(todo.task, "Test Task")
 
+    def test_edit_post(self):
+        todo = ToDo(task="Test Task", description="Test Description")
+        db.session.add(todo)
+        db.session.commit()
+
+        response = self.app.post(url_for('main.edit', todo_id=todo.id), data={
+            'task': "New Task",
+            'description': "New Description"
+        }, follow_redirects=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'New Task', response.data)
+
+        updated_todo = ToDo.query.get(todo.id)
+        self.assertEqual(updated_todo.task, "New Task")
+
 
 class TestToDoService(unittest.TestCase):
     """Unit Tests for the ToDo service"""
@@ -204,6 +220,103 @@ class TestToDoService(unittest.TestCase):
             'Cannot delete a non-existing todo.', 'error')
         mock_logger.info.assert_not_called()
         mock_logger.error.assert_called_with('Todo item not found: ID 3')
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_edit_todo_description(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.edit_todo(todo.id, task='Test Task',
+                               description='New Description')
+        updated_todo = ToDo.query.get(todo.id)
+        print("\nupdated" + str(updated_todo))
+
+        self.assertEqual(updated_todo.description, 'New Description')
+        mock_flash.assert_not_called()
+        mock_logger.info.assert_called_with('Updated to_do: <ToDo Test Task>')
+        mock_logger.error.assert_not_called()
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_edit_todo_task(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.edit_todo(todo.id, task='New Task',
+                               description='Test Description')
+        updated_todo = ToDo.query.get(todo.id)
+
+        self.assertEqual(updated_todo.task, 'New Task')
+        mock_flash.assert_not_called()
+        mock_logger.info.assert_called_with('Updated to_do: <ToDo New Task>')
+        mock_logger.error.assert_not_called()
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_edit_todo_fails_when_task_is_empty(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.edit_todo(
+            todo.id, task='', description='Test Description')
+        updated_todo = ToDo.query.get(todo.id)
+
+        self.assertEqual(updated_todo.task, 'Test Task')
+        mock_flash.assert_called_with('Task cannot be empty.', 'error')
+        mock_logger.info.assert_not_called()
+        mock_logger.error.assert_called_with(
+            'Error updating to_do: Task cannot be empty.')
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_edit_todo_fails_when_todo_not_found(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.edit_todo(
+            3, task='New Task', description='Test Description')
+        updated_todo = ToDo.query.get(todo.id)
+
+        self.assertEqual(updated_todo.task, 'Test Task')
+        mock_flash.assert_called_with(
+            'Cannot edit a non-existing todo.', 'error')
+        mock_logger.info.assert_not_called()
+        mock_logger.error.assert_called_with('Todo item not found: ID 3')
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_edit_todo_fails_when_task_exceeds_max_length(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.edit_todo(todo.id, task='x' * 33,
+                               description='Test Description')
+        updated_todo = ToDo.query.get(todo.id)
+
+        self.assertEqual(updated_todo.task, 'Test Task')
+        mock_flash.assert_called_with(
+            'Task exceeds maximum length of 32 characters', 'error')
+        mock_logger.info.assert_not_called()
+        mock_logger.error.assert_called_with(
+            'Error updating to_do: Task exceeds maximum length of 32 characters')
+
+    @patch('app.services.todo_service.flash')
+    @patch('app.services.todo_service.logger')
+    def test_edit_todo_fails_when_description_exceeds_max_length(self, mock_logger, mock_flash):
+        todo = ToDo(task='Test Task', description='Test Description')
+        db.session.add(todo)
+        db.session.commit()
+        todo_service.edit_todo(todo.id, task='Test Task',
+                               description='x' * 300)
+        updated_todo = ToDo.query.get(todo.id)
+
+        self.assertEqual(updated_todo.description, 'Test Description')
+        mock_flash.assert_called_with(
+            'Description exceeds maximum length of 256 characters', 'error')
+        mock_logger.info.assert_not_called()
+        mock_logger.error.assert_called_with(
+            'Error updating to_do: Description exceeds maximum length of 256 characters')
 
 
 if __name__ == '__main__':
