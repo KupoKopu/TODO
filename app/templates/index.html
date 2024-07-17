@@ -7,7 +7,12 @@
         <td>
             <p>{{ todo.task }}</p>
             <br>
-            {{ todo.description }}
+            <div class="flex-row">
+                {{ todo.description }}
+                <form action="{{ url_for('main.delete_todo', todo_id=todo.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
         </td>
     </tr>
     {% endfor %}
