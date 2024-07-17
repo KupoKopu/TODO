@@ -5,7 +5,14 @@
     {% for todo in todos %}
     <tr>
         <td>
-            <p>{{ todo.task }}</p>
+            <div class="flex-row">
+                <span>
+                    <p>{{ todo.task }}</p>
+                </span>
+                <form action="{{ url_for('main.edit', todo_id=todo.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </form>
+            </div>
             <br>
             <div class="flex-row">
                 {{ todo.description }}
