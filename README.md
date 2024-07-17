@@ -1,13 +1,14 @@
-TODO APPLICATION
+# TODO APPLICATION
 
 This project implemenents an application that allows a user to create todo items that are stored locally.
 
-Features Implemented:
+### Features Implemented:
 - adding to do
 - deleting to do
 - editing to do
+- search filter
 
-TEAM
+### TEAM
 KupoKopu - Developer, Tester, Project manager
 luyah231 - Developer, Tester
 
@@ -20,7 +21,7 @@ Responsible for developing functionality from tickets, participating in code rev
 Tester
 Responsible for manually testing the application to spot bugs and how complete features are.
 
-TOOLS
+### TOOLS
 Version Control
 - Git
 
@@ -47,7 +48,7 @@ Auditing
 - Lighthouse
 - Zap Scan
 
-INSTRUCTIONS
+### INSTRUCTIONS
 - have python installed with pip (developed and tested with python 3.12.0)
 - clone repo
 - install requirements `pip install -r requirements.txt`
@@ -55,7 +56,7 @@ INSTRUCTIONS
 - run the app `flask run`
 - a browser tab will open with the localhost app or you can enter the `http://localhost:5000/index` url in the command line into your browser
 
-DEV INSTRUCTIONS
+### DEV INSTRUCTIONS
 - have python installed with pip (developed and tested with python 3.12.0)
 - install flask `pip install flask`
 - install autopep8 `pip install autopep8`
@@ -79,7 +80,7 @@ Tickets are assigned and when code complete, are put up a pull request to be rev
 
 Security reports generated from Zap scan github actions will be used to address security by creating future response tickets.
 
-TEST METHODOLOGY
+### TEST METHODOLOGY
 Test Driven Development.
 
 Create tests before implementation of ticket. Use the tests to as a blueprint for the code.
@@ -102,7 +103,7 @@ Github actions will run:
 Code reviews
 Use code reviews to assess code against coding best practices. Approve the pull request or comment any improvements.
 
-CODING BEST PRACTICES
+### CODING BEST PRACTICES
 - Write Readable and meaningful code
  - 'calculate_total' is more descriptive than 'calc'
 - Use snake_case for variables and camelCase for class names
@@ -120,7 +121,7 @@ CODING BEST PRACTICES
  - and much more...
  - this can be easily done with autopep8 automatic linting
 
-CI PIPELINES
+### CI PIPELINES
 Github Actions are used to automate test coverage, accessibility, performance and security reports.
 
 Coverage CI
@@ -132,7 +133,7 @@ Generate Accessibility and Performance Reports
 Zap Scan CI
 Generate Security Reports
 
-STANDARDS
+### STANDARDS
 IEEE 730
 Standard for a Software Quality Assurance (SQA) plan.
 Objective is to ensure software meets it's requirements and is of quality by defining systematic processes, tasks and responsibilities to ensure quality.
@@ -147,5 +148,8 @@ To meet this standard the project will:
 - implement processes to verify and validate the application through unit testing and end to tend testing
 - manage risk by implementing a plan for implementation of the project
 
-PERFORMANCE AND ACCESSIBILITY AUDITS
+### PERFORMANCE AND ACCESSIBILITY AUDITS
 ![alt text](accessibility-and-performance-audit.png)
+
+### SECURITY AUDIT
+![alt text](security-audit.png)
