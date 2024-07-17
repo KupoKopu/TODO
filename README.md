@@ -156,7 +156,10 @@ To meet this standard the project will:
 
 Overall Score is positive for performance and accessibility.
 
-Web app accessibility is great with all interactable elements traversable via keyboard
+Web app accessibility is great with all interactable elements traversable via keyboard. Other Accessibility avenues could be explored like:
+- Alt Text for images
+- High colour contrast
+- large interactive elements
 
 Performance is great however can still be improved. Custom CSS could be used to then remove bootstrap CDN to reduce bloat of all the styling and interactivity not used by the web app.
 
